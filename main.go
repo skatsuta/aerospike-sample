@@ -1,8 +1,8 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"os"
 
 	asc "github.com/aerospike/aerospike-client-go"
 )
@@ -14,13 +14,9 @@ func panicOnErr(err error) {
 }
 
 func main() {
-	var host string
-	var port int
-	flag.StringVar(&host, "h", "127.0.0.1", "Aerospike host")
-	flag.IntVar(&port, "p", 3000, "Aerospike port")
-	flag.Parse()
-
 	// define a client to connect to
+	host := os.Getenv("AEROSPIKE_PORT_3000_TCP_ADDR")
+	port := 3000
 	cl, err := asc.NewClient(host, port)
 	panicOnErr(err)
 
