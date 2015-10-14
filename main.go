@@ -31,7 +31,9 @@ func main() {
 	}
 
 	// write the bins
-	err = cl.Put(nil, key, bins)
+	wp := asc.NewWritePolicy(0, 0)
+	wp.SendKey = true
+	err = cl.Put(wp, key, bins)
 	panicOnErr(err)
 
 	rec, err := cl.Get(nil, key)
