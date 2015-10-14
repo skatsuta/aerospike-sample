@@ -39,7 +39,7 @@ func main() {
 
 	fmt.Printf("%#v\n", *rec)
 
-	existed, err := cl.Delete(nil, key)
-	panicOnErr(err)
-	fmt.Printf("Record existed before delete? %v\n", existed)
+	//existed, err := cl.Delete(nil, key)
+	//panicOnErr(err)
+	//fmt.Printf("Record existed before delete? %v\n", existed)
 }
