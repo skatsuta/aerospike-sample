@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	asc "github.com/aerospike/aerospike-client-go"
+	"github.com/k0kubun/pp"
 )
 
 func panicOnErr(err error) {
@@ -39,7 +39,7 @@ func main() {
 	rec, err := cl.Get(nil, key)
 	panicOnErr(err)
 
-	fmt.Printf("%#v\n", *rec)
+	_, _ = pp.Printf("key: %v\nbins: %v\n", *rec.Key, rec.Bins)
 
 	//existed, err := cl.Delete(nil, key)
 	//panicOnErr(err)
