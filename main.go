@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	asc "github.com/aerospike/aerospike-client-go"
@@ -41,7 +42,16 @@ func main() {
 
 	_, _ = pp.Printf("key: %v\nbins: %v\n", *rec.Key, rec.Bins)
 
-	//existed, err := cl.Delete(nil, key)
-	//panicOnErr(err)
-	//fmt.Printf("Record existed before delete? %v\n", existed)
+	// scan all data
+	rs, err := cl.ScanAll(nil, "test", "aerospike")
+	panicOnErr(err)
+	defer rs.Close()
+
+	for r := range rs.Results() {
+		_, _ = pp.Println(*r.Record.Key, r.Record.Bins)
+	}
+
+	existed, err := cl.Delete(nil, key)
+	panicOnErr(err)
+	fmt.Printf("Record existed before delete? %v\n", existed)
 }
