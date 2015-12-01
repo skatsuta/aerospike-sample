@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -15,10 +16,17 @@ func panicOnErr(err error) {
 }
 
 func main() {
-	// define a client to connect to
-	host := os.Getenv("AEROSPIKE_PORT_3000_TCP_ADDR")
-	port := 3000
-	cl, err := asc.NewClient(host, port)
+	// flags
+	host := flag.String("h", "127.0.0.1", "host")
+	port := flag.Int("p", 3000, "port")
+	del := flag.Bool("del", false, "delete?")
+	flag.Parse()
+
+	// connect to Aerospike
+	if h, found := os.LookupEnv("AEROSPIKE_PORT_3000_TCP_ADDR"); found {
+		*host = h
+	}
+	cl, err := asc.NewClient(*host, *port)
 	panicOnErr(err)
 
 	key, err := asc.NewKey("test", "aerospike", "key")
@@ -33,7 +41,7 @@ func main() {
 
 	// write the bins
 	wp := asc.NewWritePolicy(0, 0)
-	wp.SendKey = true
+	wp.SendKey = true // also send the key itself
 	err = cl.Put(wp, key, bins)
 	panicOnErr(err)
 
@@ -51,7 +59,9 @@ func main() {
 		_, _ = pp.Println(*r.Record.Key, r.Record.Bins)
 	}
 
-	existed, err := cl.Delete(nil, key)
-	panicOnErr(err)
-	fmt.Printf("Record existed before delete? %v\n", existed)
+	if *del {
+		existed, err := cl.Delete(nil, key)
+		panicOnErr(err)
+		fmt.Printf("Record existed before delete? %v\n", existed)
+	}
 }
